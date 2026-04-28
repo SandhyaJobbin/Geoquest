@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amazon GeoQuest – USA & Canada Explorer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Amazon+Ember:wght@400;700&family=Rajdhani:wght@400;600;700&display=swap');
+
+  :root {
+    --amazon-orange: #FF9900;
+    --amazon-dark-orange: #e47911;
+    --amazon-black: #131921;
+    --amazon-dark: #232F3E;
+    --amazon-mid: #37475A;
+    --amazon-white: #FFFFFF;
+    --amazon-light: #F3F3F3;
+    --amazon-accent: #febd69;
+    --amazon-teal: #00A8E1;
+    --glow-orange: 0 0 20px rgba(255,153,0,0.5);
+    --glow-strong: 0 0 40px rgba(255,153,0,0.8);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--amazon-black);
+    color: var(--amazon-white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--amazon-dark);
+    border-bottom: 3px solid var(--amazon-orange);
+    padding: 0 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: 64px;
+  }
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .logo-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: var(--amazon-orange);
+    letter-spacing: 2px;
+  }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .score-pill {
+    background: var(--amazon-black);
+    border: 2px solid var(--amazon-orange);
+    border-radius: 20px;
+    padding: 6px 18px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--amazon-orange);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-lb {
+    background: var(--amazon-orange);
+    color: var(--amazon-black);
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    letter-spacing: 1px;
+  }
+  .btn-lb:hover { background: var(--amazon-accent); }
+
+  /* ── SCREENS ── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── INTRO ── */
+  #intro-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at 50% 0%, #2a1a00 0%, var(--amazon-black) 70%);
+  }
+  #intro-screen.active { display: flex; }
+  .intro-card {
+    background: var(--amazon-dark);
+    border: 2px solid var(--amazon-orange);
+    border-radius: 16px;
+    padding: 50px 60px;
+    max-width: 520px;
+    width: 90%;
+    text-align: center;
+    box-shadow: var(--glow-strong);
+    animation: fadeUp 0.6s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(30px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+  .pecky-intro {
+    font-size: 5rem;
+    margin-bottom: 10px;
+    animation: bounce 2s infinite;
+  }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  .intro-card h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    color: var(--amazon-orange);
+    letter-spacing: 3px;
+    margin-bottom: 6px;
+  }
+  .intro-card p {
+    color: #ccc;
+    margin-bottom: 30px;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  .form-group {
+    margin-bottom: 18px;
+    text-align: left;
+  }
+  .form-group label {
+    display: block;
+    font-weight: 700;
+    color: var(--amazon-accent);
+    margin-bottom: 6px;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+  }
+  .form-group input {
+    width: 100%;
+    background: var(--amazon-black);
+    border: 2px solid var(--amazon-mid);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--amazon-white);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .form-group input:focus {
+    border-color: var(--amazon-orange);
+    box-shadow: 0 0 10px rgba(255,153,0,0.3);
+  }
+  .btn-start {
+    width: 100%;
+    background: var(--amazon-orange);
+    color: var(--amazon-black);
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+  .btn-start:hover {
+    background: var(--amazon-accent);
+    box-shadow: var(--glow-orange);
+    transform: scale(1.02);
+  }
+
+  /* ── MAIN CONTENT ── */
+  #main-screen { padding: 30px 20px 60px; }
+
+  /* Zone Nav */
+  .zone-nav {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+  }
+  .zone-tab {
+    background: var(--amazon-dark);
+    border: 2px solid var(--amazon-mid);
+    color: #ccc;
+    border-radius: 30px;
+    padding: 10px 28px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+  .zone-tab:hover, .zone-tab.active {
+    border-color: var(--amazon-orange);
+    color: var(--amazon-orange);
+    box-shadow: var(--glow-orange);
+    background: rgba(255,153,0,0.1);
+  }
+
+  /* Zone Container */
+  .zone { display: none; animation: fadeIn 0.4s ease; }
+  .zone.active { display: block; }
+  @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+
+  .zone-header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .zone-header h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.4rem;
+    color: var(--amazon-orange);
+    letter-spacing: 3px;
+  }
+  .zone-header p { color: #aaa; font-size: 1rem; margin-top: 4px; }
+
+  /* ── ZONE 1: Interactive Map ── */
+  .map-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  @media(max-width:900px) { .map-wrapper { grid-template-columns:1fr; } }
+
+  .map-svg-container {
+    background: var(--amazon-dark);
+    border: 2px solid var(--amazon-mid);
+    border-radius: 14px;
+    padding: 20px;
+    overflow: hidden;
+    position: relative;
+  }
+  .map-svg-container svg {
+    width: 100%;
+    height: auto;
+  }
+  .map-svg-container svg path, .map-svg-container svg rect, .map-svg-container svg polygon {
+    cursor: pointer;
+    transition: fill 0.2s, filter 0.2s;
+    stroke: #131921;
+    stroke-width: 1.5;
+  }
+  .map-svg-container svg path:hover {
+    fill: var(--amazon-orange) !important;
+    filter: drop-shadow(0 0 6px rgba(255,153,0,0.8));
+  }
+  .map-info-panel {
+    background: var(--amazon-dark);
+    border: 2px solid var(--amazon-orange);
+    border-radius: 14px;
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: var(--glow-orange);
+    min-height: 300px;
+    justify-content: center;
+  }
+  .map-info-panel .placeholder {
+    color: #555;
+    font-size: 3rem;
+    margin-bottom: 16px;
+  }
+  .map-info-panel .placeholder-text {
+    color: #666;
+    font-size: 1rem;
+  }
+  .map-info-panel .state-abbr {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 5rem;
+    color: var(--amazon-orange);
+    line-height: 1;
+    text-shadow: var(--glow-strong);
+    margin-bottom: 10px;
+  }
+  .map-info-panel .state-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: var(--amazon-white);
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+  .map-info-panel .state-flag {
+    font-size: 3rem;
+    margin-bottom: 14px;
+  }
+  .specialty-tag {
+    background: rgba(255,153,0,0.15);
+    border: 1px solid var(--amazon-orange);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 0.9rem;
+    color: var(--amazon-accent);
+    margin: 4px;
+    display: inline-block;
+  }
+  .specialties { margin-top: 8px; }
+  .capital-info {
+    background: var(--amazon-black);
+    border-radius: 10px;
+    padding: 12px 20px;
+    margin: 14px 0;
+    width: 100%;
+  }
+  .capital-info .label { font-size: 0.8rem; color: #888; letter-spacing: 1px; text-transform: uppercase; }
+  .capital-info .value { font-size: 1.1rem; font-weight: 700; color: var(--amazon-white); }
+
+  /* ── ZONE 2: Geographic Tiles ── */
+  .tiles-filter {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    background: var(--amazon-dark);
+    border: 1.5px solid var(--amazon-mid);
+    color: #bbb;
+    border-radius: 20px;
+    padding: 7px 20px;
+    cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--amazon-orange);
+    color: var(--amazon-orange);
+    background: rgba(255,153,0,0.1);
+  }
+  .tiles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .geo-tile {
+    background: var(--amazon-dark);
+    border: 2px solid var(--amazon-mid);
+    border-radius: 12px;
+    padding: 18px 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .geo-tile:hover {
+    border-color: var(--amazon-orange);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(255,153,0,0.3);
+  }
+  .geo-tile.earned {
+    border-color: var(--amazon-orange);
+    background: rgba(255,153,0,0.1);
+  }
+  .geo-tile .tile-flag { font-size: 2rem; margin-bottom: 8px; }
+  .geo-tile .tile-abbr {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    color: var(--amazon-orange);
+    line-height: 1;
+  }
+  .geo-tile .tile-name {
+    font-size: 0.78rem;
+    color: #ccc;
+    margin-top: 4px;
+    font-weight: 600;
+  }
+  .geo-tile .tile-capital {
+    font-size: 0.72rem;
+    color: #888;
+    margin-top: 3px;
+  }
+  .geo-tile .badge-overlay {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    font-size: 1.2rem;
+    display: none;
+  }
+  .geo-tile.earned .badge-overlay { display: block; }
+  .progress-bar-wrap {
+    max-width: 500px;
+    margin: 0 auto 24px;
+    text-align: center;
+  }
+  .progress-bar-wrap p { color: #aaa; font-size: 0.9rem; margin-bottom: 8px; }
+  .progress-bar {
+    height: 10px;
+    background: var(--amazon-mid);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--amazon-orange);
+    border-radius: 5px;
+    transition: width 0.5s;
+  }
+
+  /* Badge Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.show { display: flex; }
+  .badge-modal {
+    background: var(--amazon-dark);
+    border: 3px solid var(--amazon-orange);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 380px;
+    width: 90%;
+    text-align: center;
+    animation: popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275);
+    box-shadow: var(--glow-strong);
+    position: relative;
+  }
+  @keyframes popIn {
+    from { opacity:0; transform:scale(0.5); }
+    to { opacity:1; transform:scale(1); }
+  }
+  .badge-modal .pecky-badge { font-size: 6rem; animation: spin-in 0.5s ease; }
+  @keyframes spin-in {
+    from { transform: rotate(-180deg) scale(0); }
+    to { transform: rotate(0) scale(1); }
+  }
+  .badge-modal h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: var(--amazon-orange);
+    margin: 12px 0 6px;
+    letter-spacing: 2px;
+  }
+  .badge-modal p { color: #ccc; font-size: 0.95rem; line-height: 1.5; }
+  .badge-modal .modal-close {
+    background: var(--amazon-orange);
+    color: var(--amazon-black);
+    border: none;
+    border-radius: 8px;
+    padding: 12px 30px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-top: 20px;
+    width: 100%;
+    transition: background 0.2s;
+  }
+  .badge-modal .modal-close:hover { background: var(--amazon-accent); }
+  .confetti-emoji { position:absolute; font-size:2rem; animation: flyUp 1.5s ease forwards; opacity:0; }
+  @keyframes flyUp {
+    0% { opacity:1; transform:translateY(0) rotate(0); }
+    100% { opacity:0; transform:translateY(-100px) rotate(360deg); }
+  }
+
+  /* ── ZONE 3: Quiz ── */
+  .quiz-container {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .quiz-stats {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    background: var(--amazon-dark);
+    border: 2px solid var(--amazon-mid);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+  }
+  .stat-card .stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    color: var(--amazon-orange);
+  }
+  .stat-card .stat-lbl { font-size: 0.8rem; color: #888; letter-spacing: 1px; text-transform: uppercase; }
+  .quiz-card {
+    background: var(--amazon-dark);
+    border: 2px solid var(--amazon-mid);
+    border-radius: 16px;
+    padding: 36px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .quiz-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--amazon-orange);
+    transform-origin: left;
+    animation: none;
+  }
+  .quiz-type-badge {
+    display: inline-block;
+    background: rgba(255,153,0,0.2);
+    border: 1px solid var(--amazon-orange);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.8rem;
+    color: var(--amazon-orange);
+    letter-spacing: 1px;
+    margin-bottom: 18px;
+    text-transform: uppercase;
+  }
+  .quiz-question {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--amazon-white);
+    margin-bottom: 28px;
+    line-height: 1.4;
+  }
+  .quiz-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .quiz-option {
+    background: var(--amazon-black);
+    border: 2px solid var(--amazon-mid);
+    border-radius: 10px;
+    padding: 14px 18px;
+    cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--amazon-white);
+    transition: all 0.2s;
+    text-align: left;
+  }
+  .quiz-option:hover { border-color: var(--amazon-orange); color: var(--amazon-orange); }
+  .quiz-option.correct { border-color: #2ecc71; background: rgba(46,204,113,0.15); color: #2ecc71; }
+  .quiz-option.wrong { border-color: #e74c3c; background: rgba(231,76,60,0.15); color: #e74c3c; }
+  .quiz-option:disabled { cursor: not-allowed; }
+  .quiz-feedback {
+    margin-top: 20px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1rem;
+    display: none;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct-fb { background: rgba(46,204,113,0.2); border: 1px solid #2ecc71; color: #2ecc71; }
+  .quiz-feedback.wrong-fb { background: rgba(231,76,60,0.2); border: 1px solid #e74c3c; color: #e74c3c; }
+  .quiz-next-btn {
+    margin-top: 20px;
+    width: 100%;
+    background: var(--amazon-orange);
+    color: var(--amazon-black);
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: none;
+  }
+  .quiz-next-btn.show { display: block; }
+  .quiz-next-btn:hover { background: var(--amazon-accent); }
+
+  /* Quiz Complete */
+  .quiz-complete {
+    text-align: center;
+    padding: 40px;
+  }
+  .quiz-complete .score-big {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 6rem;
+    color: var(--amazon-orange);
+    text-shadow: var(--glow-strong);
+    line-height: 1;
+  }
+  .quiz-complete h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 3px;
+    margin: 10px 0 20px;
+  }
+  .quiz-complete p { color: #bbb; margin-bottom: 28px; }
+  .quiz-complete .restart-btn {
+    background: var(--amazon-orange);
+    color: var(--amazon-black);
+    border: none;
+    border-radius: 8px;
+    padding: 14px 36px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .quiz-complete .restart-btn:hover { background: var(--amazon-accent); }
+
+  /* ── LEADERBOARD MODAL ── */
+  #lb-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    z-index: 3000;
+    align-items: center;
+    justify-content: center;
+  }
+  #lb-modal.show { display: flex; }
+  .lb-panel {
+    background: var(--amazon-dark);
+    border: 2px solid var(--amazon-orange);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 560px;
+    width: 92%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: var(--glow-strong);
+  }
+  .lb-panel h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.4rem;
+    color: var(--amazon-orange);
+    letter-spacing: 3px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .lb-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--amazon-black);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    border: 1px solid var(--amazon-mid);
+    transition: border-color 0.2s;
+  }
+  .lb-row.me { border-color: var(--amazon-orange); box-shadow: 0 0 12px rgba(255,153,0,0.3); }
+  .lb-rank {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    color: var(--amazon-mid);
+    width: 32px;
+    text-align: center;
+  }
+  .lb-rank.gold { color: #FFD700; }
+  .lb-rank.silver { color: #C0C0C0; }
+  .lb-rank.bronze { color: #CD7F32; }
+  .lb-name { flex: 1; font-weight: 700; font-size: 1rem; }
+  .lb-pts {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    color: var(--amazon-orange);
+  }
+  .lb-badges { font-size: 0.85rem; color: #888; }
+  .lb-close {
+    display: block;
+    width: 100%;
+    margin-top: 24px;
+    background: var(--amazon-orange);
+    color: var(--amazon-black);
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .lb-close:hover { background: var(--amazon-accent); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--amazon-black); }
+  ::-webkit-scrollbar-thumb { background: var(--amazon-mid); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--amazon-orange); }
+
+  /* Map highlight active */
+  .map-active { fill: var(--amazon-orange) !important; filter: drop-shadow(0 0 6px rgba(255,153,0,0.8)); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-area">
+    <span class="logo-title">📦 GeoQuest</span>
+  </div>
+  <div class="header-right">
+    <div class="score-pill" id="header-score">⭐ <span id="score-display">0</span> pts</div>
+    <div class="score-pill">🏅 <span id="badge-count">0</span> badges</div>
+    <button class="btn-lb" onclick="openLeaderboard()">🏆 Leaderboard</button>
+  </div>
+</header>
+
+<!-- INTRO SCREEN -->
+<div id="intro-screen" class="screen active">
+  <div class="intro-card">
+    <div class="pecky-intro">📦</div>
+    <h1>AMAZON GEOQUEST</h1>
+    <p>Explore USA & Canada like a Prime delivery driver!<br>Earn badges, conquer quizzes, and top the leaderboard with Pecky! 🦜</p>
+    <div class="form-group">
+      <label>YOUR NAME</label>
+      <input type="text" id="user-name" placeholder="Enter your name" />
+    </div>
+    <div class="form-group">
+      <label>EMAIL ADDRESS</label>
+      <input type="email" id="user-email" placeholder="Enter your email" />
+    </div>
+    <button class="btn-start" onclick="startModule()">START EXPLORING ▶</button>
+  </div>
+</div>
+
+<!-- MAIN SCREEN -->
+<div id="main-screen" class="screen">
+  <!-- Zone Nav -->
+  <div class="zone-nav">
+    <button class="zone-tab active" onclick="showZone('zone1', this)">🗺️ Zone 1: Interactive Maps</button>
+    <button class="zone-tab" onclick="showZone('zone2', this)">🎴 Zone 2: Geographic Tiles</button>
+    <button class="zone-tab" onclick="showZone('zone3', this)">❓ Zone 3: Quiz Challenge</button>
+  </div>
+
+  <!-- ZONE 1: INTERACTIVE MAP -->
+  <div id="zone1" class="zone active">
+    <div class="zone-header">
+      <h2>🗺️ INTERACTIVE MAPS</h2>
+      <p>Click any state or province to reveal its abbreviation and specialty</p>
+    </div>
+    <div class="map-wrapper">
+      <!-- SVG MAP (simplified schematic grid map for reliability) -->
+      <div class="map-svg-container">
+        <svg id="usa-canada-map" viewBox="0 0 900 700" xmlns="http://www.w3.org/2000/svg">
+          <!-- CANADA PROVINCES (top rows) -->
+          <!-- Row 0 (far north/territories) -->
+          <rect id="YT" x="10" y="10" width="100" height="70" rx="4" fill="#37475A" data-name="Yukon" data-abbr="YT" data-capital="Whitehorse" data-type="CA" data-specialties="Northern Lights,Gold Rush Heritage,Kluane National Park"/>
+          <rect id="NT" x="118" y="10" width="150" height="70" rx="4" fill="#37475A" data-name="Northwest Territories" data-abbr="NT" data-capital="Yellowknife" data-type="CA" data-specialties="Diamond Mining,Midnight Sun,Aurora Borealis"/>
+          <rect id="NU" x="276" y="10" width="180" height="70" rx="4" fill="#37475A" data-name="Nunavut" data-abbr="NU" data-capital="Iqaluit" data-type="CA" data-specialties="Inuit Culture,Polar Bears,Largest Canadian Territory"/>
+
+          <!-- Row 1 (provinces) -->
+          <rect id="BC" x="10" y="88" width="100" height="90" rx="4" fill="#37475A" data-name="British Columbia" data-abbr="BC" data-capital="Victoria" data-type="CA" data-specialties="Pacific Coast,Vancouver,Ski Resorts,Rainforests"/>
+          <rect id="AB" x="118" y="88" width="80" height="90" rx="4" fill="#37475A" data-name="Alberta" data-abbr="AB" data-capital="Edmonton" data-type="CA" data-specialties="Oil Sands,Rocky Mountains,Calgary Stampede"/>
+          <rect id="SK" x="206" y="88" width="80" height="90" rx="4" fill="#37475A" data-name="Saskatchewan" data-abbr="SK" data-capital="Regina" data-type="CA" data-specialties="Wheat Fields,Potash,Flat Prairies"/>
+          <rect id="MB" x="294" y="88" width="80" height="90" rx="4" fill="#37475A" data-name="Manitoba" data-abbr="MB" data-capital="Winnipeg" data-type="CA" data-specialties="Polar Bears,Lakes,Churchill"/>
+          <rect id="ON" x="382" y="88" width="120" height="90" rx="4" fill="#37475A" data-name="Ontario" data-abbr="ON" data-capital="Toronto" data-type="CA" data-specialties="Niagara Falls,Toronto,Manufacturing Hub"/>
+          <rect id="QC" x="510" y="88" width="110" height="90" rx="4" fill="#37475A" data-name="Quebec" data-abbr="QC" data-capital="Quebec City" data-type="CA" data-specialties="French Culture,Maple Syrup,Montreal"/>
+          <rect id="NB" x="628" y="88" width="60" height="50" rx="4" fill="#37475A" data-name="New Brunswick" data-abbr="NB" data-capital="Fredericton" data-type="CA" data-specialties="Bay of Fundy,Lobster,Bilingual Province"/>
+          <rect id="NS" x="698" y="88" width="60" height="50" rx="4" fill="#37475A" data-name="Nova Scotia" data-abbr="NS" data-capital="Halifax" data-type="CA" data-specialties="Seafood,Alexander Graham Bell,Cape Breton"/>
+          <rect id="PE" x="698" y="146" width="60" height="32" rx="4" fill="#37475A" data-name="Prince Edward Island" data-abbr="PE" data-capital="Charlottetown" data-type="CA" data-specialties="Anne of Green Gables,Potatoes,Smallest Province"/>
+          <rect id="NL" x="766" y="88" width="80" height="90" rx="4" fill="#37475A" data-name="Newfoundland and Labrador" data-abbr="NL" data-capital="St. John's" data-type="CA" data-specialties="Icebergs,Cod Fishing,Viking History"/>
+
+          <!-- CANADA SEPARATOR -->
+          <line x1="0" y1="195" x2="900" y2="195" stroke="#FF9900" stroke-width="2" stroke-dasharray="8,4"/>
+          <text x="850" y="210" fill="#FF9900" font-size="11" font-family="Arial" opacity="0.6">USA</text>
+          <text x="850" y="190" fill="#FF9900" font-size="11" font-family="Arial" opacity="0.6">CAN</text>
+
+          <!-- USA STATES (rows 2–8) -->
+          <!-- Row 2: Northwest -->
+          <rect id="WA" x="10" y="210" width="75" height="60" rx="4" fill="#37475A" data-name="Washington" data-abbr="WA" data-capital="Olympia" data-type="US" data-specialties="Microsoft HQ,Apple Orchards,Pacific Coast,Starbucks Founded"/>
+          <rect id="OR" x="10" y="278" width="75" height="60" rx="4" fill="#37475A" data-name="Oregon" data-abbr="OR" data-capital="Salem" data-type="US" data-specialties="Crater Lake,Nike HQ,Columbia River,Powell's Books"/>
+          <rect id="ID" x="93" y="210" width="60" height="80" rx="4" fill="#37475A" data-name="Idaho" data-abbr="ID" data-capital="Boise" data-type="US" data-specialties="Potatoes,Gem State,Snake River"/>
+          <rect id="MT" x="161" y="210" width="90" height="80" rx="4" fill="#37475A" data-name="Montana" data-abbr="MT" data-capital="Helena" data-type="US" data-specialties="Glacier National Park,Big Sky Country,Yellowstone Access"/>
+          <rect id="WY" x="261" y="210" width="80" height="80" rx="4" fill="#37475A" data-name="Wyoming" data-abbr="WY" data-capital="Cheyenne" data-type="US" data-specialties="Yellowstone,Grand Teton,Cowboy Culture,Least Populous"/>
+          <rect id="ND" x="349" y="210" width="80" height="55" rx="4" fill="#37475A" data-name="North Dakota" data-abbr="ND" data-capital="Bismarck" data-type="US" data-specialties="Sunflowers,Peace Garden State,Theodore Roosevelt NP"/>
+          <rect id="SD" x="349" y="273" width="80" height="55" rx="4" fill="#37475A" data-name="South Dakota" data-abbr="SD" data-capital="Pierre" data-type="US" data-specialties="Mount Rushmore,Badlands,Wall Drug"/>
+          <rect id="MN" x="437" y="210" width="75" height="80" rx="4" fill="#37475A" data-name="Minnesota" data-abbr="MN" data-capital="Saint Paul" data-type="US" data-specialties="Land of 10,000 Lakes,Mall of America,Prince"/>
+          <rect id="WI" x="520" y="210" width="65" height="80" rx="4" fill="#37475A" data-name="Wisconsin" data-abbr="WI" data-capital="Madison" data-type="US" data-specialties="Dairy Capital,Green Bay Packers,Milwaukee Brewers"/>
+          <rect id="MI" x="593" y="210" width="65" height="80" rx="4" fill="#37475A" data-name="Michigan" data-abbr="MI" data-capital="Lansing" data-type="US" data-specialties="Motor City,Great Lakes,Motown Music"/>
+          <rect id="ME" x="760" y="210" width="80" height="80" rx="4" fill="#37475A" data-name="Maine" data-abbr="ME" data-capital="Augusta" data-type="US" data-specialties="Lobster,Lighthouses,Acadia NP,Easternmost State"/>
+          <rect id="VT" x="706" y="210" width="50" height="55" rx="4" fill="#37475A" data-name="Vermont" data-abbr="VT" data-capital="Montpelier" data-type="US" data-specialties="Maple Syrup,Ben & Jerry's,Ski Country"/>
+          <rect id="NH" x="706" y="272" width="50" height="35" rx="4" fill="#37475A" data-name="New Hampshire" data-abbr="NH" data-capital="Concord" data-type="US" data-specialties="Live Free or Die,White Mountains,Fall Foliage"/>
+
+          <!-- Row 3 -->
+          <rect id="CA" x="10" y="346" width="75" height="100" rx="4" fill="#37475A" data-name="California" data-abbr="CA" data-capital="Sacramento" data-type="US" data-specialties="Hollywood,Silicon Valley,Golden Gate,Wine Country"/>
+          <rect id="NV" x="93" y="346" width="60" height="80" rx="4" fill="#37475A" data-name="Nevada" data-abbr="NV" data-capital="Carson City" data-type="US" data-specialties="Las Vegas,Area 51,Hoover Dam,Silver State"/>
+          <rect id="UT" x="161" y="298" width="70" height="80" rx="4" fill="#37475A" data-name="Utah" data-abbr="UT" data-capital="Salt Lake City" data-type="US" data-specialties="Arches NP,Salt Lake,Skiing,Mormonism"/>
+          <rect id="CO" x="239" y="298" width="80" height="80" rx="4" fill="#37475A" data-name="Colorado" data-abbr="CO" data-capital="Denver" data-type="US" data-specialties="Rocky Mountains,Skiing,Craft Beer,Cannabis"/>
+          <rect id="NE" x="349" y="336" width="80" height="50" rx="4" fill="#37475A" data-name="Nebraska" data-abbr="NE" data-capital="Lincoln" data-type="US" data-specialties="Cornhusker State,Great Plains,Warren Buffett's Home"/>
+          <rect id="KS" x="349" y="394" width="80" height="50" rx="4" fill="#37475A" data-name="Kansas" data-abbr="KS" data-capital="Topeka" data-type="US" data-specialties="Wizard of Oz,Wheat Belt,Tornado Alley"/>
+          <rect id="IA" x="437" y="298" width="75" height="55" rx="4" fill="#37475A" data-name="Iowa" data-abbr="IA" data-capital="Des Moines" data-type="US" data-specialties="Corn State,Caucuses,Field of Dreams"/>
+          <rect id="MO" x="437" y="361" width="75" height="55" rx="4" fill="#37475A" data-name="Missouri" data-abbr="MO" data-capital="Jefferson City" data-type="US" data-specialties="Gateway Arch,Mark Twain,Show-Me State"/>
+          <rect id="IL" x="520" y="298" width="55" height="55" rx="4" fill="#37475A" data-name="Illinois" data-abbr="IL" data-capital="Springfield" data-type="US" data-specialties="Chicago Deep Dish,Lincoln's Home,Windy City"/>
+          <rect id="IN" x="520" y="361" width="55" height="55" rx="4" fill="#37475A" data-name="Indiana" data-abbr="IN" data-capital="Indianapolis" data-type="US" data-specialties="Indy 500,Crossroads of America,Basketball"/>
+          <rect id="OH" x="583" y="298" width="60" height="55" rx="4" fill="#37475A" data-name="Ohio" data-abbr="OH" data-capital="Columbus" data-type="US" data-specialties="Rock & Roll HoF,Neil Armstrong,Buckeyes"/>
+          <rect id="KY" x="583" y="361" width="60" height="55" rx="4" fill="#37475A" data-name="Kentucky" data-abbr="KY" data-capital="Frankfort" data-type="US" data-specialties="Kentucky Derby,Bourbon,Bluegrass Music"/>
+          <rect id="WV" x="651" y="298" width="50" height="55" rx="4" fill="#37475A" data-name="West Virginia" data-abbr="WV" data-capital="Charleston" data-type="US" data-specialties="Mountain State,Coal Mining,New River Gorge"/>
+          <rect id="VA" x="651" y="361" width="70" height="45" rx="4" fill="#37475A" data-name="Virginia" data-abbr="VA" data-capital="Richmond" data-type="US" data-specialties="Pentagon,Colonial History,Blue Ridge Mountains"/>
+          <rect id="PA" x="651" y="253" width="70" height="40" rx="4" fill="#37475A" data-name="Pennsylvania" data-abbr="PA" data-capital="Harrisburg" data-type="US" data-specialties="Liberty Bell,Gettysburg,Philly Cheesesteak,Steel City"/>
+          <rect id="NY" x="660" y="210" width="95" height="38" rx="4" fill="#37475A" data-name="New York" data-abbr="NY" data-capital="Albany" data-type="US" data-specialties="Statue of Liberty,Times Square,Niagara Falls,Finance Hub"/>
+          <rect id="MA" x="760" y="308" width="80" height="35" rx="4" fill="#37475A" data-name="Massachusetts" data-abbr="MA" data-capital="Boston" data-type="US" data-specialties="Harvard,MIT,Freedom Trail,Patriots"/>
+          <rect id="CT" x="760" y="350" width="40" height="30" rx="4" fill="#37475A" data-name="Connecticut" data-abbr="CT" data-capital="Hartford" data-type="US" data-specialties="First US University,Insurance Capital,Nutmeg State"/>
+          <rect id="RI" x="807" y="350" width="33" height="30" rx="4" fill="#37475A" data-name="Rhode Island" data-abbr="RI" data-capital="Providence" data-type="US" data-specialties="Smallest State,Quahog Clams,Gilded Age Newport"/>
+          <rect id="NJ" x="720" y="299" width="45" height="40" rx="4" fill="#37475A" data-name="New Jersey" data-abbr="NJ" data-capital="Trenton" data-type="US" data-specialties="Jersey Shore,Princeton,Garden State,Boardwalk Empire"/>
+          <rect id="DE" x="720" y="346" width="45" height="30" rx="4" fill="#37475A" data-name="Delaware" data-abbr="DE" data-capital="Dover" data-type="US" data-specialties="First State,Corporate HQ Hub,Tax-Free Shopping"/>
+          <rect id="MD" x="680" y="408" width="60" height="30" rx="4" fill="#37475A" data-name="Maryland" data-abbr="MD" data-capital="Annapolis" data-type="US" data-specialties="Chesapeake Bay,Blue Crabs,Johns Hopkins,Fort McHenry"/>
+          <rect id="DC" x="748" y="388" width="38" height="28" rx="4" fill="#444" data-name="Washington D.C." data-abbr="DC" data-capital="Washington D.C." data-type="US" data-specialties="US Capital,White House,Smithsonian,National Mall"/>
+
+          <!-- Row 4 Southwest & South -->
+          <rect id="AZ" x="93" y="434" width="70" height="70" rx="4" fill="#37475A" data-name="Arizona" data-abbr="AZ" data-capital="Phoenix" data-type="US" data-specialties="Grand Canyon,Saguaro Cactus,Sedona,Desert Heat"/>
+          <rect id="NM" x="171" y="386" width="70" height="80" rx="4" fill="#37475A" data-name="New Mexico" data-abbr="NM" data-capital="Santa Fe" data-type="US" data-specialties="Roswell,Green Chile,Carlsbad Caverns,Adobe Architecture"/>
+          <rect id="OK" x="349" y="452" width="80" height="50" rx="4" fill="#37475A" data-name="Oklahoma" data-abbr="OK" data-capital="Oklahoma City" data-type="US" data-specialties="Tornado Alley,Route 66,Sooner State,Oil Capital"/>
+          <rect id="AR" x="437" y="424" width="70" height="55" rx="4" fill="#37475A" data-name="Arkansas" data-abbr="AR" data-capital="Little Rock" data-type="US" data-specialties="Walmart HQ,Diamond State,Ozark Mountains"/>
+          <rect id="TN" x="515" y="424" width="80" height="50" rx="4" fill="#37475A" data-name="Tennessee" data-abbr="TN" data-capital="Nashville" data-type="US" data-specialties="Country Music,Graceland,Great Smoky Mountains,Jack Daniel's"/>
+          <rect id="NC" x="603" y="410" width="80" height="45" rx="4" fill="#37475A" data-name="North Carolina" data-abbr="NC" data-capital="Raleigh" data-type="US" data-specialties="First Flight,Research Triangle,Blue Ridge Parkway"/>
+          <rect id="SC" x="693" y="440" width="60" height="45" rx="4" fill="#37475A" data-name="South Carolina" data-abbr="SC" data-capital="Columbia" data-type="US" data-specialties="First State to Secede,Peaches,Myrtle Beach"/>
+
+          <!-- Row 5 Deep South -->
+          <rect id="TX" x="241" y="466" width="120" height="80" rx="4" fill="#37475A" data-name="Texas" data-abbr="TX" data-capital="Austin" data-type="US" data-specialties="Largest State (contiguous),NASA,Oil & Gas,BBQ,Cowboys"/>
+          <rect id="LA" x="437" y="487" width="70" height="50" rx="4" fill="#37475A" data-name="Louisiana" data-abbr="LA" data-capital="Baton Rouge" data-type="US" data-specialties="New Orleans,Mardi Gras,Cajun Food,Jazz Music"/>
+          <rect id="MS" x="515" y="482" width="60" height="50" rx="4" fill="#37475A" data-name="Mississippi" data-abbr="MS" data-capital="Jackson" data-type="US" data-specialties="Blues Music,Mississippi River,Magnolia State"/>
+          <rect id="AL" x="583" y="462" width="60" height="60" rx="4" fill="#37475A" data-name="Alabama" data-abbr="AL" data-capital="Montgomery" data-type="US" data-specialties="Civil Rights Movement,Space & Rocket Center,Heart of Dixie"/>
+          <rect id="GA" x="651" y="462" width="70" height="60" rx="4" fill="#37475A" data-name="Georgia" data-abbr="GA" data-capital="Atlanta" data-type="US" data-specialties="Peach State,CNN HQ,Coca-Cola,Martin Luther King Jr."/>
+          <rect id="FL" x="600" y="530" width="130" height="60" rx="4" fill="#37475A" data-name="Florida" data-abbr="FL" data-capital="Tallahassee" data-type="US" data-specialties="Disney World,Space Coast,Everglades,Retirement Capital"/>
+
+          <!-- Non-contiguous -->
+          <rect id="AK" x="10" y="480" width="100" height="80" rx="4" fill="#37475A" data-name="Alaska" data-abbr="AK" data-capital="Juneau" data-type="US" data-specialties="Largest State,Northern Lights,Oil Pipeline,Denali"/>
+          <rect id="HI" x="120" y="520" width="80" height="45" rx="4" fill="#37475A" data-name="Hawaii" data-abbr="HI" data-capital="Honolulu" data-type="US" data-specialties="Volcanoes,Luau,Pearl Harbor,Aloha Spirit"/>
+
+          <!-- Labels overlay for major states -->
+          <text x="47" y="60" fill="#fff" font-size="10" text-anchor="middle" pointer-events="none">YT</text>
+          <text x="193" y="60" fill="#fff" font-size="10" text-anchor="middle" pointer-events="none">NT</text>
+          <text x="366" y="60" fill="#fff" font-size="10" text-anchor="middle" pointer-events="none">NU</text>
+          <text x="60" y="140" fill="#fff" font-size="10" text-anchor="middle" pointer-events="none">BC</text>
+          <text x="158" y="140" fill="#fff" font-size="10" text-anchor="middle" pointer-events="none">AB</text>
+          <text x="246" y="140" fill="#fff" font-size="10" text-anchor="middle" pointer-events="none">SK</text>
+          <text x="334" y="140" fill="#fff" font-size="10" text-anchor="middle" pointer-events="none">MB</text>
+          <text x="442" y="140" fill="#fff" font-size="10" text-anchor="middle" pointer-events="none">ON</text>
+          <text x="565" y="140" fill="#fff" font-size="10" text-anchor="middle" pointer-events="none">QC</text>
+          <text x="658" y="118" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">NB</text>
+          <text x="728" y="118" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">NS</text>
+          <text x="728" y="165" fill="#fff" font-size="8" text-anchor="middle" pointer-events="none">PE</text>
+          <text x="806" y="140" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">NL</text>
+          <text x="47" y="245" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">WA</text>
+          <text x="47" y="313" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">OR</text>
+          <text x="123" y="258" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">ID</text>
+          <text x="206" y="258" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">MT</text>
+          <text x="301" y="258" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">WY</text>
+          <text x="389" y="243" fill="#fff" font-size="8" text-anchor="middle" pointer-events="none">ND</text>
+          <text x="389" y="306" fill="#fff" font-size="8" text-anchor="middle" pointer-events="none">SD</text>
+          <text x="474" y="258" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">MN</text>
+          <text x="552" y="258" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">WI</text>
+          <text x="625" y="258" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">MI</text>
+          <text x="800" y="258" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">ME</text>
+          <text x="731" y="240" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">NY</text>
+          <text x="731" y="278" fill="#fff" font-size="8" text-anchor="middle" pointer-events="none">VT</text>
+          <text x="731" y="296" fill="#fff" font-size="7" text-anchor="middle" pointer-events="none">NH</text>
+          <text x="47" y="400" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">CA</text>
+          <text x="123" y="392" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">NV</text>
+          <text x="196" y="344" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">UT</text>
+          <text x="279" y="344" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">CO</text>
+          <text x="389" y="367" fill="#fff" font-size="8" text-anchor="middle" pointer-events="none">NE</text>
+          <text x="389" y="425" fill="#fff" font-size="8" text-anchor="middle" pointer-events="none">KS</text>
+          <text x="474" y="330" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">IA</text>
+          <text x="474" y="392" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">MO</text>
+          <text x="547" y="330" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">IL</text>
+          <text x="547" y="392" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">IN</text>
+          <text x="613" y="330" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">OH</text>
+          <text x="613" y="392" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">KY</text>
+          <text x="676" y="328" fill="#fff" font-size="8" text-anchor="middle" pointer-events="none">WV</text>
+          <text x="686" y="387" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">VA</text>
+          <text x="686" y="278" fill="#fff" font-size="8" text-anchor="middle" pointer-events="none">PA</text>
+          <text x="800" y="332" fill="#fff" font-size="8" text-anchor="middle" pointer-events="none">MA</text>
+          <text x="780" y="372" fill="#fff" font-size="7" text-anchor="middle" pointer-events="none">CT</text>
+          <text x="823" y="372" fill="#fff" font-size="7" text-anchor="middle" pointer-events="none">RI</text>
+          <text x="742" y="323" fill="#fff" font-size="7" text-anchor="middle" pointer-events="none">NJ</text>
+          <text x="742" y="365" fill="#fff" font-size="7" text-anchor="middle" pointer-events="none">DE</text>
+          <text x="710" y="427" fill="#fff" font-size="7" text-anchor="middle" pointer-events="none">MD</text>
+          <text x="767" y="404" fill="#fff" font-size="7" text-anchor="middle" pointer-events="none">DC</text>
+          <text x="128" y="475" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">AZ</text>
+          <text x="206" y="430" fill="#fff" font-size="8" text-anchor="middle" pointer-events="none">NM</text>
+          <text x="389" y="482" fill="#fff" font-size="8" text-anchor="middle" pointer-events="none">OK</text>
+          <text x="472" y="456" fill="#fff" font-size="8" text-anchor="middle" pointer-events="none">AR</text>
+          <text x="555" y="453" fill="#fff" font-size="8" text-anchor="middle" pointer-events="none">TN</text>
+          <text x="643" y="436" fill="#fff" font-size="8" text-anchor="middle" pointer-events="none">NC</text>
+          <text x="723" y="466" fill="#fff" font-size="8" text-anchor="middle" pointer-events="none">SC</text>
+          <text x="301" y="512" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">TX</text>
+          <text x="472" y="515" fill="#fff" font-size="8" text-anchor="middle" pointer-events="none">LA</text>
+          <text x="545" y="510" fill="#fff" font-size="8" text-anchor="middle" pointer-events="none">MS</text>
+          <text x="613" y="495" fill="#fff" font-size="8" text-anchor="middle" pointer-events="none">AL</text>
+          <text x="686" y="496" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">GA</text>
+          <text x="665" y="563" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">FL</text>
+          <text x="60" y="525" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">AK</text>
+          <text x="160" y="546" fill="#fff" font-size="9" text-anchor="middle" pointer-events="none">HI</text>
+        </svg>
+      </div>
+      <!-- Info Panel -->
+      <div class="map-info-panel" id="map-info-panel">
+        <div class="placeholder">🗺️</div>
+        <div class="placeholder-text">Click a state or province on the map to see its details</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ZONE 2: GEOGRAPHIC TILES -->
+  <div id="zone2" class="zone">
+    <div class="zone-header">
+      <h2>🎴 GEOGRAPHIC TILES</h2>
+      <p>Click each tile to unlock Pecky badges and earn points!</p>
+    </div>
+    <div class="progress-bar-wrap">
+      <p>Badges Collected: <strong id="badge-progress">0</strong> / <strong id="badge-total">0</strong></p>
+      <div class="progress-bar"><div class="progress-fill" id="badge-progress-bar" style="width:0%"></div></div>
+    </div>
+    <div class="tiles-filter">
+      <button class="filter-btn active" onclick="filterTiles('all', this)">All</button>
+      <button class="filter-btn" onclick="filterTiles('US', this)">🇺🇸 USA</button>
+      <button class="filter-btn" onclick="filterTiles('CA', this)">🇨🇦 Canada</button>
+    </div>
+    <div class="tiles-grid" id="tiles-grid"></div>
+  </div>
+
+  <!-- ZONE 3: QUIZ -->
+  <div id="zone3" class="zone">
+    <div class="zone-header">
+      <h2>❓ QUIZ CHALLENGE</h2>
+      <p>Test your knowledge of states, provinces & abbreviations!</p>
+    </div>
+    <div class="quiz-container">
+      <div class="quiz-stats">
+        <div class="stat-card"><div class="stat-val" id="q-score">0</div><div class="stat-lbl">Score</div></div>
+        <div class="stat-card"><div class="stat-val" id="q-correct">0</div><div class="stat-lbl">Correct</div></div>
+        <div class="stat-card"><div class="stat-val" id="q-num">1</div><div class="stat-lbl">Question</div></div>
+      </div>
+      <div class="quiz-card" id="quiz-card"></div>
+    </div>
+  </div>
+</div>
+
+<!-- BADGE MODAL -->
+<div class="modal-overlay" id="badge-modal-overlay">
+  <div class="badge-modal" id="badge-modal">
+    <div class="pecky-badge" id="modal-pecky">📦</div>
+    <h3 id="modal-title">BADGE UNLOCKED!</h3>
+    <p id="modal-desc">You discovered a new region!</p>
+    <button class="modal-close" onclick="closeBadgeModal()">AWESOME! ✨</button>
+  </div>
+</div>
+
+<!-- LEADERBOARD MODAL -->
+<div id="lb-modal">
+  <div class="lb-panel">
+    <h2>🏆 LEADERBOARD</h2>
+    <div id="lb-rows"></div>
+    <button class="lb-close" onclick="document.getElementById('lb-modal').classList.remove('show')">CLOSE</button>
+  </div>
+</div>
+
+<script>
+// ─── DATA ─────────────────────────────────────────────────────────────────
+const geoData = {
+  // USA States
+  WA:{name:"Washington",abbr:"WA",capital:"Olympia",type:"US",specialties:["Microsoft HQ","Apple Orchards","Pacific Coast","Starbucks Founded"],flag:"🌲"},
+  OR:{name:"Oregon",abbr:"OR",capital:"Salem",type:"US",specialties:["Crater Lake","Nike HQ","Columbia River","Powell's Books"],flag:"🌊"},
+  CA:{name:"California",abbr:"CA",capital:"Sacramento",type:"US",specialties:["Hollywood","Silicon Valley","Golden Gate","Wine Country"],flag:"🌉"},
+  ID:{name:"Idaho",abbr:"ID",capital:"Boise",type:"US",specialties:["Potatoes","Gem State","Snake River"],flag:"🥔"},
+  MT:{name:"Montana",abbr:"MT",capital:"Helena",type:"US",specialties:["Glacier National Park","Big Sky Country","Yellowstone Access"],flag:"🦌"},
+  WY:{name:"Wyoming",abbr:"WY",capital:"Cheyenne",type:"US",specialties:["Yellowstone","Grand Teton","Cowboy Culture"],flag:"🐄"},
+  NV:{name:"Nevada",abbr:"NV",capital:"Carson City",type:"US",specialties:["Las Vegas","Area 51","Hoover Dam","Silver State"],flag:"🎰"},
+  UT:{name:"Utah",abbr:"UT",capital:"Salt Lake City",type:"US",specialties:["Arches NP","Salt Lake","Skiing","Mormonism"],flag:"⛷️"},
+  CO:{name:"Colorado",abbr:"CO",capital:"Denver",type:"US",specialties:["Rocky Mountains","Skiing","Craft Beer"],flag:"🏔️"},
+  AZ:{name:"Arizona",abbr:"AZ",capital:"Phoenix",type:"US",specialties:["Grand Canyon","Saguaro Cactus","Sedona","Desert Heat"],flag:"🌵"},
+  NM:{name:"New Mexico",abbr:"NM",capital:"Santa Fe",type:"US",specialties:["Roswell","Green Chile","Carlsbad Caverns"],flag:"👽"},
+  TX:{name:"Texas",abbr:"TX",capital:"Austin",type:"US",specialties:["Largest State","NASA","Oil & Gas","BBQ"],flag:"🤠"},
+  AK:{name:"Alaska",abbr:"AK",capital:"Juneau",type:"US",specialties:["Largest State","Northern Lights","Oil Pipeline","Denali"],flag:"🐻"},
+  HI:{name:"Hawaii",abbr:"HI",capital:"Honolulu",type:"US",specialties:["Volcanoes","Luau","Pearl Harbor","Aloha Spirit"],flag:"🌺"},
+  ND:{name:"North Dakota",abbr:"ND",capital:"Bismarck",type:"US",specialties:["Sunflowers","Peace Garden State"],flag:"🌻"},
+  SD:{name:"South Dakota",abbr:"SD",capital:"Pierre",type:"US",specialties:["Mount Rushmore","Badlands","Wall Drug"],flag:"🗿"},
+  NE:{name:"Nebraska",abbr:"NE",capital:"Lincoln",type:"US",specialties:["Cornhusker State","Great Plains"],flag:"🌽"},
+  KS:{name:"Kansas",abbr:"KS",capital:"Topeka",type:"US",specialties:["Wizard of Oz","Wheat Belt","Tornado Alley"],flag:"🌪️"},
+  OK:{name:"Oklahoma",abbr:"OK",capital:"Oklahoma City",type:"US",specialties:["Tornado Alley","Route 66","Sooner State"],flag:"🛣️"},
+  MN:{name:"Minnesota",abbr:"MN",capital:"Saint Paul",type:"US",specialties:["Land of 10,000 Lakes","Mall of America"],flag:"💧"},
+  WI:{name:"Wisconsin",abbr:"WI",capital:"Madison",type:"US",specialties:["Dairy Capital","Green Bay Packers","Milwaukee"],flag:"🧀"},
+  MI:{name:"Michigan",abbr:"MI",capital:"Lansing",type:"US",specialties:["Motor City","Great Lakes","Motown Music"],flag:"🚗"},
+  IA:{name:"Iowa",abbr:"IA",capital:"Des Moines",type:"US",specialties:["Corn State","Caucuses","Field of Dreams"],flag:"🌽"},
+  MO:{name:"Missouri",abbr:"MO",capital:"Jefferson City",type:"US",specialties:["Gateway Arch","Mark Twain"],flag:"🏹"},
+  AR:{name:"Arkansas",abbr:"AR",capital:"Little Rock",type:"US",specialties:["Walmart HQ","Diamond State","Ozark Mountains"],flag:"💎"},
+  LA:{name:"Louisiana",abbr:"LA",capital:"Baton Rouge",type:"US",specialties:["New Orleans","Mardi Gras","Cajun Food","Jazz"],flag:"🎷"},
+  MS:{name:"Mississippi",abbr:"MS",capital:"Jackson",type:"US",specialties:["Blues Music","Mississippi River"],flag:"🎵"},
+  TN:{name:"Tennessee",abbr:"TN",capital:"Nashville",type:"US",specialties:["Country Music","Graceland","Great Smoky Mountains"],flag:"🎸"},
+  AL:{name:"Alabama",abbr:"AL",capital:"Montgomery",type:"US",specialties:["Civil Rights Movement","Space & Rocket Center"],flag:"🚀"},
+  GA:{name:"Georgia",abbr:"GA",capital:"Atlanta",type:"US",specialties:["Peach State","CNN HQ","Coca-Cola","MLK Jr."],flag:"🍑"},
+  FL:{name:"Florida",abbr:"FL",capital:"Tallahassee",type:"US",specialties:["Disney World","Space Coast","Everglades"],flag:"🏖️"},
+  IL:{name:"Illinois",abbr:"IL",capital:"Springfield",type:"US",specialties:["Chicago Deep Dish","Lincoln's Home","Windy City"],flag:"🌆"},
+  IN:{name:"Indiana",abbr:"IN",capital:"Indianapolis",type:"US",specialties:["Indy 500","Crossroads of America","Basketball"],flag:"🏎️"},
+  OH:{name:"Ohio",abbr:"OH",capital:"Columbus",type:"US",specialties:["Rock & Roll HoF","Neil Armstrong","Buckeyes"],flag:"🎸"},
+  KY:{name:"Kentucky",abbr:"KY",capital:"Frankfort",type:"US",specialties:["Kentucky Derby","Bourbon","Bluegrass Music"],flag:"🐴"},
+  WV:{name:"West Virginia",abbr:"WV",capital:"Charleston",type:"US",specialties:["Mountain State","Coal Mining","New River Gorge"],flag:"⛏️"},
+  VA:{name:"Virginia",abbr:"VA",capital:"Richmond",type:"US",specialties:["Pentagon","Colonial History","Blue Ridge Mountains"],flag:"🏛️"},
+  NC:{name:"North Carolina",abbr:"NC",capital:"Raleigh",type:"US",specialties:["First Flight","Research Triangle"],flag:"✈️"},
+  SC:{name:"South Carolina",abbr:"SC",capital:"Columbia",type:"US",specialties:["First State to Secede","Peaches","Myrtle Beach"],flag:"🍑"},
+  PA:{name:"Pennsylvania",abbr:"PA",capital:"Harrisburg",type:"US",specialties:["Liberty Bell","Gettysburg","Philly Cheesesteak"],flag:"🔔"},
+  NY:{name:"New York",abbr:"NY",capital:"Albany",type:"US",specialties:["Statue of Liberty","Times Square","Finance Hub"],flag:"🗽"},
+  ME:{name:"Maine",abbr:"ME",capital:"Augusta",type:"US",specialties:["Lobster","Lighthouses","Acadia NP"],flag:"🦞"},
+  VT:{name:"Vermont",abbr:"VT",capital:"Montpelier",type:"US",specialties:["Maple Syrup","Ben & Jerry's","Ski Country"],flag:"🍁"},
+  NH:{name:"New Hampshire",abbr:"NH",capital:"Concord",type:"US",specialties:["Live Free or Die","White Mountains"],flag:"🏔️"},
+  MA:{name:"Massachusetts",abbr:"MA",capital:"Boston",type:"US",specialties:["Harvard","MIT","Freedom Trail"],flag:"🎓"},
+  CT:{name:"Connecticut",abbr:"CT",capital:"Hartford",type:"US",specialties:["First US University","Insurance Capital"],flag:"📚"},
+  RI:{name:"Rhode Island",abbr:"RI",capital:"Providence",type:"US",specialties:["Smallest State","Quahog Clams","Newport"],flag:"⚓"},
+  NJ:{name:"New Jersey",abbr:"NJ",capital:"Trenton",type:"US",specialties:["Jersey Shore","Princeton","Garden State"],flag:"🌿"},
+  DE:{name:"Delaware",abbr:"DE",capital:"Dover",type:"US",specialties:["First State","Corporate HQ Hub","Tax-Free Shopping"],flag:"⭐"},
+  MD:{name:"Maryland",abbr:"MD",capital:"Annapolis",type:"US",specialties:["Chesapeake Bay","Blue Crabs","Johns Hopkins"],flag:"🦀"},
+  DC:{name:"Washington D.C.",abbr:"DC",capital:"Washington D.C.",type:"US",specialties:["US Capital","White House","Smithsonian"],flag:"🏛️"},
+  // CANADA
+  BC:{name:"British Columbia",abbr:"BC",capital:"Victoria",type:"CA",specialties:["Pacific Coast","Vancouver","Ski Resorts","Rainforests"],flag:"🏔️"},
+  AB:{name:"Alberta",abbr:"AB",capital:"Edmonton",type:"CA",specialties:["Oil Sands","Rocky Mountains","Calgary Stampede"],flag:"⛽"},
+  SK:{name:"Saskatchewan",abbr:"SK",capital:"Regina",type:"CA",specialties:["Wheat Fields","Potash","Flat Prairies"],flag:"🌾"},
+  MB:{name:"Manitoba",abbr:"MB",capital:"Winnipeg",type:"CA",specialties:["Polar Bears","Lakes","Churchill"],flag:"🐻‍❄️"},
+  ON:{name:"Ontario",abbr:"ON",capital:"Toronto",type:"CA",specialties:["Niagara Falls","Toronto","Manufacturing Hub"],flag:"🍁"},
+  QC:{name:"Quebec",abbr:"QC",capital:"Quebec City",type:"CA",specialties:["French Culture","Maple Syrup","Montreal"],flag:"⚜️"},
+  NB:{name:"New Brunswick",abbr:"NB",capital:"Fredericton",type:"CA",specialties:["Bay of Fundy","Lobster","Bilingual Province"],flag:"🌊"},
+  NS:{name:"Nova Scotia",abbr:"NS",capital:"Halifax",type:"CA",specialties:["Seafood","Alexander Graham Bell","Cape Breton"],flag:"🦞"},
+  PE:{name:"Prince Edward Island",abbr:"PE",capital:"Charlottetown",type:"CA",specialties:["Anne of Green Gables","Potatoes"],flag:"🥔"},
+  NL:{name:"Newfoundland and Labrador",abbr:"NL",capital:"St. John's",type:"CA",specialties:["Icebergs","Cod Fishing","Viking History"],flag:"🧊"},
+  YT:{name:"Yukon",abbr:"YT",capital:"Whitehorse",type:"CA",specialties:["Northern Lights","Gold Rush Heritage"],flag:"✨"},
+  NT:{name:"Northwest Territories",abbr:"NT",capital:"Yellowknife",type:"CA",specialties:["Diamond Mining","Midnight Sun","Aurora Borealis"],flag:"💎"},
+  NU:{name:"Nunavut",abbr:"NU",capital:"Iqaluit",type:"CA",specialties:["Inuit Culture","Polar Bears","Largest Canadian Territory"],flag:"🐻‍❄️"}
+};
+
+// Pecky forms per region
+const peckyBadges = {
+  US: {
+    WA:"🌲📦", OR:"🏕️📦", CA:"🎬📦", ID:"🥔📦", MT:"🏔️📦", WY:"🤠📦", NV:"🎰📦", UT:"⛷️📦",
+    CO:"🏔️📦", AZ:"🌵📦", NM:"👽📦", TX:"🤠📦", AK:"🐻📦", HI:"🌺📦", ND:"🌻📦", SD:"🗿📦",
+    NE:"🌽📦", KS:"🌪️📦", OK:"🛣️📦", MN:"💧📦", WI:"🧀📦", MI:"🚗📦", IA:"🌽📦", MO:"🏹📦",
+    AR:"💎📦", LA:"🎷📦", MS:"🎵📦", TN:"🎸📦", AL:"🚀📦", GA:"🍑📦", FL:"🏖️📦", IL:"🌆📦",
+    IN:"🏎️📦", OH:"🎸📦", KY:"🐴📦", WV:"⛏️📦", VA:"🏛️📦", NC:"✈️📦", SC:"🍑📦", PA:"🔔📦",
+    NY:"🗽📦", ME:"🦞📦", VT:"🍁📦", NH:"🏔️📦", MA:"🎓📦", CT:"📚📦", RI:"⚓📦", NJ:"🌿📦",
+    DE:"⭐📦", MD:"🦀📦", DC:"🏛️📦"
+  },
+  CA: {
+    BC:"🏔️📦", AB:"⛽📦", SK:"🌾📦", MB:"🐻‍❄️📦", ON:"🍁📦", QC:"⚜️📦", NB:"🌊📦",
+    NS:"🦞📦", PE:"🥔📦", NL:"🧊📦", YT:"✨📦", NT:"💎📦", NU:"🐻‍❄️📦"
+  }
+};
+
+// ─── APP STATE ────────────────────────────────────────────────────────────
+let appState = {
+  userName: '',
+  userEmail: '',
+  totalScore: 0,
+  badgesEarned: new Set(),
+  quizScore: 0,
+  quizCorrect: 0,
+  quizNum: 0,
+  quizAnswered: false,
+  currentQuestion: null
+};
+
+// ─── LEADERBOARD DATA ─────────────────────────────────────────────────────
+const mockLeaders = [
+  {name:"Priya S.", score:4200, badges:47},
+  {name:"Jordan M.", score:3800, badges:41},
+  {name:"Amelia K.", score:3500, badges:38},
+  {name:"Rohan P.", score:3200, badges:35},
+  {name:"Sam T.", score:2900, badges:30},
+];
+
+// ─── INIT ─────────────────────────────────────────────────────────────────
+function startModule() {
+  const name = document.getElementById('user-name').value.trim();
+  const email = document.getElementById('user-email').value.trim();
+  if (!name || !email) {
+    alert('Please enter your name and email to start!');
+    return;
+  }
+  if (!email.includes('@')) { alert('Please enter a valid email address!'); return; }
+  appState.userName = name;
+  appState.userEmail = email;
+  document.getElementById('intro-screen').classList.remove('active');
+  document.getElementById('main-screen').classList.add('active');
+  initMap();
+  initTiles();
+  initQuiz();
+}
+
+// ─── ZONE NAV ─────────────────────────────────────────────────────────────
+function showZone(id, btn) {
+  document.querySelectorAll('.zone').forEach(z => z.classList.remove('active'));
+  document.querySelectorAll('.zone-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ─── ZONE 1: MAP ──────────────────────────────────────────────────────────
+let lastActive = null;
+function initMap() {
+  const svg = document.getElementById('usa-canada-map');
+  const rects = svg.querySelectorAll('rect[data-abbr]');
+  rects.forEach(el => {
+    el.addEventListener('click', function() {
+      if (lastActive) lastActive.style.fill = '#37475A';
+      this.style.fill = '#FF9900';
+      lastActive = this;
+      const abbr = this.dataset.abbr;
+      const data = geoData[abbr];
+      if (data) showMapInfo(data);
+      addScore(50, 'map click');
+    });
+  });
+}
+
+function showMapInfo(d) {
+  const panel = document.getElementById('map-info-panel');
+  const pecky = peckyBadges[d.type][d.abbr] || '📦';
+  const specialtyTags = d.specialties.map(s => `<span class="specialty-tag">${d.flag || '📍'} ${s}</span>`).join('');
+  panel.innerHTML = `
+    <div class="state-flag">${pecky}</div>
+    <div class="state-abbr">${d.abbr}</div>
+    <div class="state-name">${d.name}</div>
+    <div class="capital-info">
+      <div class="label">🏛️ Capital City</div>
+      <div class="value">${d.capital}</div>
+    </div>
+    <div class="capital-info">
+      <div class="label">🌍 Region</div>
+      <div class="value">${d.type === 'US' ? '🇺🇸 United States' : '🇨🇦 Canada'}</div>
+    </div>
+    <div class="specialties">${specialtyTags}</div>
+  `;
+}
+
+// ─── ZONE 2: TILES ────────────────────────────────────────────────────────
+let currentFilter = 'all';
+function initTiles() {
+  const total = Object.keys(geoData).length;
+  document.getElementById('badge-total').textContent = total;
+  renderTiles('all');
+}
+
+function renderTiles(filter) {
+  const grid = document.getElementById('tiles-grid');
+  grid.innerHTML = '';
+  Object.values(geoData).forEach(d => {
+    if (filter !== 'all' && d.type !== filter) return;
+    const tile = document.createElement('div');
+    tile.className = 'geo-tile' + (appState.badgesEarned.has(d.abbr) ? ' earned' : '');
+    tile.id = 'tile-' + d.abbr;
+    tile.innerHTML = `
+      <div class="tile-flag">${d.flag || '📍'}</div>
+      <div class="tile-abbr">${d.abbr}</div>
+      <div class="tile-name">${d.name}</div>
+      <div class="tile-capital">🏛️ ${d.capital}</div>
+      <div class="badge-overlay">✅</div>
+    `;
+    tile.onclick = () => clickTile(d);
+    grid.appendChild(tile);
+  });
+}
+
+function filterTiles(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTiles(filter);
+}
+
+function clickTile(d) {
+  if (!appState.badgesEarned.has(d.abbr)) {
+    appState.badgesEarned.add(d.abbr);
+    addScore(100, 'badge');
+    updateBadgeUI();
+    showBadgeModal(d);
+  } else {
+    showBadgeModal(d, true);
+  }
+  const tile = document.getElementById('tile-' + d.abbr);
+  if (tile) tile.classList.add('earned');
+}
+
+function showBadgeModal(d, alreadyHave = false) {
+  const pecky = peckyBadges[d.type][d.abbr] || '📦';
+  document.getElementById('modal-pecky').textContent = pecky;
+  document.getElementById('modal-title').textContent = alreadyHave ? 'BADGE COLLECTED!' : '🎉 BADGE UNLOCKED!';
+  document.getElementById('modal-desc').innerHTML = alreadyHave
+    ? `You already own the <strong>${d.name}</strong> Pecky badge!<br>Capital: ${d.capital}<br>Specialty: ${d.specialties[0]}`
+    : `You earned the <strong>${d.name}</strong> Pecky badge!<br>📍 Capital: ${d.capital}<br>✨ Known for: ${d.specialties[0]}`;
+  document.getElementById('badge-modal-overlay').classList.add('show');
+  if (!alreadyHave) spawnConfetti();
+}
+
+function closeBadgeModal() {
+  document.getElementById('badge-modal-overlay').classList.remove('show');
+}
+
+function spawnConfetti() {
+  const modal = document.getElementById('badge-modal');
+  const emojis = ['🎉','⭐','🏅','✨','🎊','📦'];
+  for (let i=0;i<6;i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-emoji';
+    el.textContent = emojis[i%emojis.length];
+    el.style.left = (10+i*15)+'%';
+    el.style.bottom = '10%';
+    el.style.animationDelay = (i*0.1)+'s';
+    modal.appendChild(el);
+    setTimeout(()=>el.remove(), 2000);
+  }
+}
+
+function updateBadgeUI() {
+  const count = appState.badgesEarned.size;
+  const total = Object.keys(geoData).length;
+  document.getElementById('badge-count').textContent = count;
+  document.getElementById('badge-progress').textContent = count;
+  document.getElementById('badge-progress-bar').style.width = ((count/total)*100)+'%';
+}
+
+// ─── ZONE 3: QUIZ ─────────────────────────────────────────────────────────
+const quizTypes = ['abbr-from-name','name-from-abbr','capital-from-name','name-from-capital'];
+let shuffledPool = [];
+let poolIndex = 0;
+
+function initQuiz() {
+  shuffledPool = shuffleArr(Object.keys(geoData));
+  poolIndex = 0;
+  appState.quizScore = 0;
+  appState.quizCorrect = 0;
+  appState.quizNum = 0;
+  nextQuestion();
+}
+
+function nextQuestion() {
+  if (poolIndex >= shuffledPool.length) { poolIndex = 0; shuffledPool = shuffleArr(Object.keys(geoData)); }
+  const key = shuffledPool[poolIndex++];
+  const correct = geoData[key];
+  appState.quizNum++;
+  document.getElementById('q-num').textContent = appState.quizNum;
+  appState.quizAnswered = false;
+
+  const qType = quizTypes[Math.floor(Math.random()*quizTypes.length)];
+  let question = '', correctAnswer = '', getDistractors;
+
+  if (qType === 'abbr-from-name') {
+    question = `What is the abbreviation for <strong>${correct.name}</strong>?`;
+    correctAnswer = correct.abbr;
+    getDistractors = d => d.abbr;
+  } else if (qType === 'name-from-abbr') {
+    question = `Which state/province has the abbreviation <strong>${correct.abbr}</strong>?`;
+    correctAnswer = correct.name;
+    getDistractors = d => d.name;
+  } else if (qType === 'capital-from-name') {
+    question = `What is the capital of <strong>${correct.name}</strong>?`;
+    correctAnswer = correct.capital;
+    getDistractors = d => d.capital;
+  } else {
+    question = `Which state/province has <strong>${correct.capital}</strong> as its capital?`;
+    correctAnswer = correct.name;
+    getDistractors = d => d.name;
+  }
+
+  const allKeys = Object.keys(geoData).filter(k => k !== key);
+  const distractors = shuffleArr(allKeys).slice(0,3).map(k => getDistractors(geoData[k]));
+  const options = shuffleArr([correctAnswer, ...distractors]);
+  const badge = qType === 'abbr-from-name' || qType === 'name-from-abbr' ? 'ABBREVIATION' : 'CAPITALS';
+
+  const card = document.getElementById('quiz-card');
+  card.innerHTML = `
+    <div class="quiz-type-badge">${badge}</div>
+    <div class="quiz-question">${question}</div>
+    <div class="quiz-options">
+      ${options.map(opt => `<button class="quiz-option" onclick="answerQuiz(this,'${escStr(opt)}','${escStr(correctAnswer)}')">${opt}</button>`).join('')}
+    </div>
+    <div class="quiz-feedback" id="quiz-feedback"></div>
+    <button class="quiz-next-btn" id="quiz-next" onclick="nextQuestion()">NEXT QUESTION →</button>
+  `;
+}
+
+function answerQuiz(btn, chosen, correct) {
+  if (appState.quizAnswered) return;
+  appState.quizAnswered = true;
+  const allBtns = document.querySelectorAll('.quiz-option');
+  allBtns.forEach(b => { b.disabled = true; if (b.textContent.trim() === correct) b.classList.add('correct'); });
+  const fb = document.getElementById('quiz-feedback');
+  if (chosen === correct) {
+    btn.classList.add('correct');
+    appState.quizScore += 200;
+    appState.quizCorrect++;
+    addScore(200, 'quiz');
+    fb.textContent = '✅ Correct! +200 points';
+    fb.className = 'quiz-feedback show correct-fb';
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent = `❌ Incorrect! The answer was: ${correct}`;
+    fb.className = 'quiz-feedback show wrong-fb';
+  }
+  document.getElementById('q-score').textContent = appState.quizScore;
+  document.getElementById('q-correct').textContent = appState.quizCorrect;
+  document.getElementById('quiz-next').classList.add('show');
+}
+
+// ─── SCORE ────────────────────────────────────────────────────────────────
+function addScore(pts) {
+  appState.totalScore += pts;
+  document.getElementById('score-display').textContent = appState.totalScore;
+}
+
+// ─── LEADERBOARD ──────────────────────────────────────────────────────────
+function openLeaderboard() {
+  const myEntry = {name: appState.userName || 'You', score: appState.totalScore, badges: appState.badgesEarned.size, isMe: true};
+  const combined = [...mockLeaders, myEntry].sort((a,b)=>b.score-a.score);
+  const rankClasses = ['gold','silver','bronze'];
+  const rows = combined.map((e,i) => `
+    <div class="lb-row${e.isMe ? ' me' : ''}">
+      <div class="lb-rank ${rankClasses[i]||''}">${i<3?['🥇','🥈','🥉'][i]:i+1}</div>
+      <div>
+        <div class="lb-name">${e.isMe?'⭐ '+e.name+' (You)':e.name}</div>
+        <div class="lb-badges">🏅 ${e.badges} badges</div>
+      </div>
+      <div class="lb-pts">${e.score} pts</div>
+    </div>
+  `).join('');
+  document.getElementById('lb-rows').innerHTML = rows;
+  document.getElementById('lb-modal').classList.add('show');
+}
+
+// ─── UTILS ────────────────────────────────────────────────────────────────
+function shuffleArr(arr) {
+  const a = [...arr];
+  for (let i=a.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function escStr(s) { return s.replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+</script>
+</body>
+</html>
